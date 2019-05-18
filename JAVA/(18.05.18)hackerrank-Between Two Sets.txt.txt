@@ -1,0 +1,116 @@
+import java.io.*;
+import java.math.*;
+import java.text.*;
+import java.util.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    /*
+     * Complete the getTotalX function below.
+     */
+    static int getTotalX(int[] a, int[] b) {
+        /*
+         * Write your code here.
+         */
+
+        List<Integer> numberList = new ArrayList<>();
+        // 답으로 가능성이 있는 번호리스트
+
+        int size1 = a.length;
+        int size2 = b.length;
+
+        boolean pass = true;
+        // 후보 번호리스트를 넣을 여부를 결정
+
+        int tempNumber=a[size1 - 1];
+        // 숫자 0부터가 아닌 a배열의 가장 큰 숫자부터 시작
+
+        while (tempNumber<=b[0])
+        { // 배열 b의 가장 작은 숫자까지 루프
+
+            for (int i = 0; i < size1; ++i) {
+                // 배열 a의 루프
+
+                if (  (tempNumber%a[i]) != 0 ) {
+                    // 증가하는 tempNumber의 값을 배열 a로 차례로 나누기
+                    // 성공하지 못하면 false를 주어 후보에 넣지 않는다.
+                    pass = false;
+                    break;
+                }
+
+            }
+
+            if (pass){
+                // 후보 리스트에 넣기
+                numberList.add(tempNumber);
+            }
+
+            ++tempNumber;
+            pass=true;
+            // 초기화
+
+        }
+
+        size1 = numberList.size();
+        // size1의 재활용, 후보들의 수량
+
+        for (int i = 0; i < size2; i++) {
+            // size2는 배열 b의 크기
+
+            for (int j = 0; j < size1; j++) {
+                // 후보 리스트의 루프
+
+                if ((b[i]%numberList.get(j))!=0){
+                    // b배열에게 후보리스트를 하나씩 꺼내어 나눈다.
+                    // 실패하는 후보리스트는 삭제
+                    // 이후에 size1을 하나를 줄여 for문의 에러를 방지
+                    numberList.remove(j);
+                    --size1;
+                    --j;
+                }
+
+            }
+
+        }
+
+        return numberList.size();
+    }
+
+    private static final Scanner scan = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        String temp1 = "1 1";
+        String temp2 = "1";
+        String temp3 = "100";
+
+        String[] nm = temp1.split(" ");
+
+        int n = Integer.parseInt(nm[0].trim());
+
+        int m = Integer.parseInt(nm[1].trim());
+
+        int[] a = new int[n];
+
+        String[] aItems = temp2.split(" ");
+
+        for (int aItr = 0; aItr < n; aItr++) {
+            int aItem = Integer.parseInt(aItems[aItr].trim());
+            a[aItr] = aItem;
+        }
+
+        int[] b = new int[m];
+
+        String[] bItems = temp3.split(" ");
+
+        for (int bItr = 0; bItr < m; bItr++) {
+            int bItem = Integer.parseInt(bItems[bItr].trim());
+            b[bItr] = bItem;
+        }
+
+        int total = getTotalX(a, b);
+
+        System.out.println("답 = "+total);
+
+    }
+}
