@@ -1,0 +1,102 @@
+주소 : https://www.hackerrank.com/challenges/build-a-string
+특이사항 : 아직 해결하지 못함
+import java.io.*;
+import java.math.*;
+import java.text.*;
+import java.util.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    /*
+     * Complete the buildString function below.
+     */
+    static int buildString(int a, int b, String s) {
+        /*
+         * Write your code here.
+         */
+
+        // a : 문자 하나 추가할 때 추가되는 비용
+        // b : 이미 있는 문자열을 복사하여 뒤에 추가할 때 비용
+
+        int benefitCount = b/a + 1;
+        // a와 b의 이득여부
+        // benefitCount 부터는 b를 선택했을 때 이득이거나 동등
+
+        int stringCount = s.length();
+        // 입력되는 문자열 길이
+
+        int tempInt = 1 ;
+        // benefitCount에게 더해지는 숫자
+
+        int total_money = 0 ;
+        // 결과
+
+        int remainCount;
+
+        for (int i = 0; i < stringCount; i++) {
+
+            if ( s.substring(0,i).indexOf( s.substring(i,i+1) ) == -1 ){ //aabaacaba
+                // 1. 처음에 존재하는 문자가 첫 문자인지 확인
+                total_money  += a;
+            }else if( (i+benefitCount) <= stringCount && s.substring(0,i).indexOf( s.substring(i,i+benefitCount) ) != -1 ){
+                // 2. 첫 문자가 아니다 + 이득관계가 고려된 문자열이 이미 존재한다.
+                tempInt = i  + benefitCount -1 ;
+                remainCount = stringCount - (i+benefitCount) ;
+                for (int j = 1; j <= remainCount; j++) {
+                    if (s.substring(0,i).indexOf( s.substring(i,i+benefitCount+j) ) != -1) {
+                        ++tempInt;
+                    }else {
+                        break;
+                    }
+                }
+                i = tempInt;
+                total_money += b;
+            }else{
+                if( (i+benefitCount) > stringCount ){
+                    tempInt = i;
+                    i = stringCount - 1 ;
+                    total_money += a*(i-tempInt+1);
+                    break;
+                }
+                total_money += a;
+            }
+        }
+        System.out.println("답 = "+total_money);
+
+        return total_money;
+    }
+
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        int t = Integer.parseInt(scanner.nextLine().trim());
+
+        int n;
+        int a;
+        int b;
+
+        for (int tItr = 0; tItr < t; tItr++) {
+            String[] nab = scanner.nextLine().split(" ");
+
+             n = Integer.parseInt(nab[0].trim());
+
+             a = Integer.parseInt(nab[1].trim());
+
+             b = Integer.parseInt(nab[2].trim());
+
+            String s = scanner.nextLine();
+
+            int result = buildString(a, b, s);
+
+            System.out.println("result="+result);
+
+            bufferedWriter.append(result+"\n");
+        }
+
+        bufferedWriter.close();
+    }
+}
